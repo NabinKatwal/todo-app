@@ -33,7 +33,7 @@ function App() {
                 </Link>
               </Nav>
               <Nav>
-              <Link to={"todo-list"} className="nav-link">
+              <Link to={"/todo-list"} className="nav-link">
                 Todo list
               </Link>
             </Nav>
