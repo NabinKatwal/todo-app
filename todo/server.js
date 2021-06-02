@@ -10,7 +10,7 @@ mongoose.connect('mongodb://localhost/todo', {
 })
 
 const userSchema = new mongoose.Schema({
-    name:String, 
+    username:String, 
     password: String,
 })
 
@@ -19,18 +19,26 @@ const User = mongoose.model('User', userSchema)
 app.use(cors())
 app.use(express.json())
 
-app.post('/register',async (req, res)=>{
-    const {username, password} = req.body
-    await User.create({ username, password })
+app.post("/register", async (req, res) => {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username }).exec();
+    if (user) {
+      res.status(500);
+      res.json({
+        message: "user already exists",
+      });
+      return;
+    }
+    await User.create({ username, password });
     res.json({
-        message: "success",
-    })
-})
-
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", function () {
-  app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+      message: "success",
+    });
   });
-});
+
+  const db = mongoose.connection;
+  db.on("error", console.error.bind(console, "connection error:"))
+  db.once("open", function () {
+    app.listen(port, () => {
+      console.log(`todo app listening at http://localhost:${port}`);
+    });
+  });

@@ -1,8 +1,20 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { useHistory } from 'react-router'
+import { CredentialsContext } from '../App'
+
+const handleErrors = async (response)=>{
+    if (!response.ok){
+        const { message } = await response.json()
+        throw Error(message)
+    }
+    return response.json()
+}
 
 export default function Register() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [error, setError] = useState("")
+    const [,setCredentials] = useContext(CredentialsContext)
 
     const register = (e)=>{
         e.preventDefault()
@@ -16,11 +28,24 @@ export default function Register() {
                 password,
             })
         })
+        .then(handleErrors)
+        .then(()=>{
+            setCredentials({
+                username,
+                password,
+            })
+            history.push('/')
+        }).catch((error)=>{
+            setError(error.message)
+        })
     }
+
+    const history = useHistory()
 
     return (
         <div>
             <h1>Register</h1>
+            { error && (<span style={{color: 'red'}}>{ error }</span>)}
             <form onSubmit = {register}>
                 <input onChange = {(e)=> setUsername(e.target.value)} placeholder="username"/><br />
                 <input type="password" onChange = {(e)=> setPassword(e.target.value)} placeholder="password" /><br />
