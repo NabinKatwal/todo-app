@@ -9,10 +9,7 @@ import Login from './pages/Login'
 export const CredentialsContext = React.createContext()
 
 function App() {
-  const credentialsState = useState({
-    username: 'nabin', //TODO Temp stuff, remove this and set to null
-    password: '12345'
-  })
+  const credentialsState = useState(null)
 
   return (
     <div className="App">
